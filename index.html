@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Icon Genius — Search it. Generate the gap. Ship the set.</title>
+<meta name="description" content="Search 300k+ licensed icons, keep them consistent, export production-ready sets with a license receipt.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="brand-mark">✦</span> Icon Genius</div>
+  <div class="top-actions">
+    <span id="auth-state" class="auth-state">Local mode</span>
+    <button id="btn-signin" class="btn btn-ghost">Sign in</button>
+    <button id="btn-signout" class="btn btn-ghost hidden">Sign out</button>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Search it. <span class="accent">Generate the gap.</span> Ship the set.</h1>
+  <p class="sub">300,000+ licensed icons from 200+ open sets — one search, one style, production exports with a license receipt for every icon.</p>
+  <div class="search-row">
+    <input id="search" type="search" placeholder="Try “arrow”, “cat”, “shield”, “chart”…" autocomplete="off">
+    <button id="btn-search" class="btn btn-primary">Search</button>
+  </div>
+  <label class="toggle">
+    <input type="checkbox" id="safe-only" checked>
+    <span>Commercial-safe licenses only</span>
+  </label>
+  <div id="families" class="families"></div>
+</section>
+
+<main class="layout">
+  <section class="results-pane">
+    <div class="results-head">
+      <span id="results-count">Search or pick a set to begin</span>
+      <button id="btn-more" class="btn btn-ghost hidden">Load more</button>
+    </div>
+    <div id="grid" class="grid"></div>
+    <p id="empty" class="empty hidden">No icons match. Try a shorter word — icon search loves simple nouns.</p>
+  </section>
+
+  <aside class="side-pane">
+    <div id="editor" class="card">
+      <h2>Editor</h2>
+      <div id="editor-empty" class="muted">Pick an icon to edit, recolor, and export it.</div>
+      <div id="editor-body" class="hidden">
+        <div id="preview" class="preview bg-checker"></div>
+        <div id="sel-name" class="sel-name"></div>
+        <div id="sel-license" class="sel-license"></div>
+        <div class="row">
+          <label>Color <input type="color" id="ed-color" value="#e8e6df"></label>
+          <label>Background
+            <select id="ed-bg">
+              <option value="checker">Transparent</option>
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+            </select>
+          </label>
+        </div>
+        <div class="row">
+          <label>PNG size
+            <select id="ed-size">
+              <option>64</option><option>128</option><option selected>256</option><option>512</option><option>1024</option>
+            </select>
+          </label>
+        </div>
+        <p id="palette-note" class="muted hidden">This set is multi-color — recolor applies to monochrome sets.</p>
+        <div class="btn-col">
+          <button id="btn-dl-svg" class="btn btn-primary">Download SVG</button>
+          <button id="btn-dl-png" class="btn btn-ghost">Download PNG</button>
+          <button id="btn-add" class="btn btn-ghost">Add to collection</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Collections</h2>
+      <div class="row">
+        <input id="col-name" type="text" placeholder="New collection name">
+        <button id="btn-col-new" class="btn btn-ghost">Create</button>
+      </div>
+      <div id="collections"></div>
+      <div id="col-detail" class="hidden">
+        <div class="row">
+          <label>Paint it <input type="color" id="col-color" value="#e8e6df"></label>
+          <span id="col-count" class="muted"></span>
+        </div>
+        <div id="col-icons" class="col-icons"></div>
+        <div class="btn-col">
+          <button id="btn-export-zip" class="btn btn-primary">Export ZIP (SVG + PNG + license receipt)</button>
+          <button id="btn-export-sprite" class="btn btn-ghost">Export SVG sprite</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<footer class="foot">
+  <span>Library icons via the Iconify open API — every icon keeps its own license, shown on the icon and in your export receipt. Generated icons and the consistency engine arrive in Phase 2.</span>
+</footer>
+
+<div id="auth-modal" class="modal hidden">
+  <div class="modal-card">
+    <h2 id="auth-title">Sign in</h2>
+    <input id="auth-email" type="email" placeholder="Email">
+    <input id="auth-pass" type="password" placeholder="Password">
+    <input id="auth-name" type="text" placeholder="Name (sign up only)" class="hidden">
+    <p id="auth-error" class="error hidden"></p>
+    <div class="btn-col">
+      <button id="auth-submit" class="btn btn-primary">Sign in</button>
+      <button id="auth-switch" class="btn btn-ghost">Need an account? Sign up</button>
+      <button id="auth-close" class="btn btn-ghost">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/appwrite@18/dist/iife/sdk.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
