@@ -55,7 +55,58 @@ function download(blob, filename) {
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 }
+/* Icon bodies are fetched as JSON and inlined — hotlinked <img> SVGs proved
+   unreliable on mobile browsers, and inlining makes recolor instant. */
+const iconCache = new Map(); // id -> {body, w, h}
+async function ensureIconData(ids) {
+  const missing = {};
+  for (const id of ids) {
+    if (iconCache.has(id)) continue;
+    const [p, n] = splitId(id);
+    (missing[p] = missing[p] || []).push(n);
+  }
+  for (const p of Object.keys(missing)) {
+    const names = missing[p];
+    for (let i = 0; i < names.length; i += 100) {
+      const chunk = names.slice(i, i + 100);
+      try {
+        const r = await fetch(`${API}/${p}.json?icons=${chunk.map(encodeURIComponent).join(",")}`);
+        const data = await r.json();
+        for (const n of chunk) {
+          let rec = (data.icons || {})[n];
+          if (!rec && data.aliases && data.aliases[n]) rec = (data.icons || {})[data.aliases[n].name];
+          if (rec) iconCache.set(`${p}:${n}`, { body: rec.body, w: rec.width || data.width || 24, h: rec.height || data.height || 24 });
+        }
+      } catch (e) { /* slots stay empty; export falls back to the SVG endpoint */ }
+    }
+  }
+}
+function svgMarkup(id, color) {
+  const rec = iconCache.get(id);
+  if (!rec) return "";
+  let body = rec.body;
+  if (color && isMono(id)) body = body.split("currentColor").join(color);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${rec.w} ${rec.h}" aria-hidden="true">${body}</svg>`;
+}
+function hydrateIcons(root, colorFor) {
+  const slots = root.querySelectorAll("[data-icon]:not([data-filled])");
+  const ids = [...new Set([...slots].map((s) => s.dataset.icon))];
+  if (!ids.length) return;
+  ensureIconData(ids).then(() => {
+    slots.forEach((s) => {
+      const html = svgMarkup(s.dataset.icon, colorFor ? colorFor(s.dataset.icon) : undefined);
+      if (html) { s.innerHTML = html; s.dataset.filled = "1"; }
+    });
+  });
+}
 async function fetchSvgText(id, color) {
+  await ensureIconData([id]);
+  const rec = iconCache.get(id);
+  if (rec) {
+    let body = rec.body;
+    if (color && isMono(id)) body = body.split("currentColor").join(color);
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${rec.w}" height="${rec.h}" viewBox="0 0 ${rec.w} ${rec.h}">${body}</svg>`;
+  }
   const r = await fetch(svgUrl(id, color));
   if (!r.ok) throw new Error("svg fetch failed");
   return r.text();
@@ -93,9 +144,10 @@ function renderGrid() {
     const cls = licenseClass(id);
     const badge = lic.spdx ? `<span class="badge ${cls}">${lic.spdx}</span>` : "";
     return `<div class="tile${state.selected === id ? " selected" : ""}" data-id="${id}" title="${id}">
-      <img loading="lazy" src="${svgUrl(id)}" alt="${name}">
+      <span class="slot" data-icon="${id}"></span>
       <span class="tname">${name}</span>${badge}</div>`;
   }).join("");
+  hydrateIcons(grid);
   $("#empty").classList.toggle("hidden", state.results.length > 0);
   $("#btn-more").classList.toggle("hidden", state.shown >= state.results.length);
   $("#results-count").textContent = state.results.length
@@ -144,8 +196,11 @@ function selectIcon(id) {
 function refreshPreview() {
   if (!state.selected) return;
   const color = $("#ed-color").value;
-  $("#preview").innerHTML = `<img src="${svgUrl(state.selected, color)}" alt="">`;
-  $("#preview").className = `preview bg-${$("#ed-bg").value}`;
+  const pv = $("#preview");
+  pv.className = `preview bg-${$("#ed-bg").value}`;
+  const html = svgMarkup(state.selected, color);
+  if (html) pv.innerHTML = html;
+  else ensureIconData([state.selected]).then(() => { pv.innerHTML = svgMarkup(state.selected, $("#ed-color").value); });
 }
 
 /* ---------- collections ---------- */
@@ -179,7 +234,8 @@ function renderCollections() {
     $("#col-color").value = col.color || "#e8e6df";
     $("#col-count").textContent = `${col.icons.length} icons`;
     $("#col-icons").innerHTML = col.icons.map((id) =>
-      `<div class="mini" title="${id}"><img src="${svgUrl(id, col.color)}" alt=""><button data-rm="${id}">✕</button></div>`).join("");
+      `<div class="mini" title="${id}"><span class="slot" data-icon="${id}"></span><button data-rm="${id}">✕</button></div>`).join("");
+    hydrateIcons($("#col-icons"), () => col.color);
     $("#col-icons").querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", () => {
       col.icons = col.icons.filter((i) => i !== b.dataset.rm);
       saveCollections();

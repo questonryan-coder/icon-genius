@@ -34,7 +34,8 @@ button{cursor:pointer}
 .tile{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:.6rem .3rem .45rem;display:flex;flex-direction:column;align-items:center;gap:.35rem;cursor:pointer}
 .tile:hover{border-color:var(--accent)}
 .tile.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
-.tile img{width:40px;height:40px}
+.tile .slot svg{width:40px;height:40px;display:block}
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:28px;min-height:28px}
 .tile .tname{font-size:.62rem;color:var(--muted);text-align:center;word-break:break-all;line-height:1.25}
 .tile .badge{font-size:.58rem;padding:.05rem .35rem;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
 .badge.safe{color:#8be08b;border-color:#2f5230}
@@ -45,7 +46,7 @@ button{cursor:pointer}
 .card h2{margin:.1rem 0 .7rem;font-size:1.05rem}
 .muted{color:var(--muted);font-size:.88rem}
 .preview{height:170px;border-radius:10px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);margin-bottom:.6rem}
-.preview img{width:110px;height:110px}
+.preview svg{width:110px;height:110px}
 .bg-checker{background:repeating-conic-gradient(#26262e 0% 25%, #1b1b21 0% 50%) 0 0/22px 22px}
 .bg-dark{background:#0a0a0d}.bg-light{background:#f2f0ea}
 .sel-name{font-weight:600;word-break:break-all}
@@ -60,7 +61,7 @@ select{background:var(--panel2);color:var(--text);border:1px solid var(--line);b
 .col-item .del{color:var(--muted);background:none;border:none;font-size:1rem}
 .col-icons{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0}
 .col-icons .mini{position:relative;width:44px;height:44px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center}
-.col-icons .mini img{width:28px;height:28px}
+.col-icons .mini svg{width:28px;height:28px;display:block}
 .col-icons .mini button{position:absolute;top:-7px;right:-7px;width:17px;height:17px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--muted);font-size:.65rem;line-height:1;padding:0}
 .foot{padding:1.2rem;color:var(--muted);font-size:.82rem;text-align:center;border-top:1px solid var(--line);margin-top:1rem}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:20}
