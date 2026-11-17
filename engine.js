@@ -22,7 +22,7 @@
   let registry = {};
   try { registry = JSON.parse(lsGet("ig_custom_v1") || "{}"); } catch (e) { registry = {}; }
   function registerCustom(rec) { registry[rec.id] = rec; lsSet("ig_custom_v1", JSON.stringify(registry)); return rec.id; }
-  root.IGCustom = { get: (id) => registry[id] || null, all: () => registry, register: registerCustom };
+  root.IGCustom = { get: (id) => registry[id] || null, all: () => registry, register: registerCustom, bodyOf, reportLine };
   let uidCounter = 0;
   const newId = (kind) => `${kind}:${Date.now().toString(36)}${(uidCounter++).toString(36)}`;
 
@@ -484,6 +484,10 @@
       if (u !== lastUser) { lastUser = u; loadCredits(); }
     }, 1500);
   }
-  root.IGEngine = { normalizeSvgText, composeIcon, matchTemplates, shade, TEMPLATES: T };
+  root.IGEngine = { normalizeSvgText, composeIcon, matchTemplates, shade, TEMPLATES: T,
+    /* Phase 3: Complete My Set spends/records credits through the same
+       ledger as Phase 2 generation — one balance, one set of rules. */
+    credits: { state: () => ({ balance: creditsState.balance, plan: creditsState.plan, loaded: creditsState.loaded }),
+               debit: debitCredits, record: recordGeneration, ready: awReady } };
   if (typeof document !== "undefined") document.addEventListener("DOMContentLoaded", initEngine);
 })();

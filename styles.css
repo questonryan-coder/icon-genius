@@ -89,3 +89,6 @@ select{background:var(--panel2);color:var(--text);border:1px solid var(--line);b
 .modal-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:1.4rem;width:min(92vw,360px);display:flex;flex-direction:column;gap:.6rem}
 .modal-card input{padding:.6rem .7rem;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text)}
 .error{color:#ff8a8a;font-size:.85rem;margin:0}
+.shared-grid .mini.lg{width:56px;height:56px}
+.shared-grid .mini.lg svg{width:36px;height:36px}
+.share-url{word-break:break-all;font-size:.78rem;color:var(--accent)}

@@ -74,6 +74,55 @@
   </div>
 </section>
 
+<section id="shared-view" class="gen-wrap hidden">
+  <div class="card">
+    <h2 id="shared-title">Shared set</h2>
+    <p class="muted">Someone shared this set with you — the whole set travels inside the link itself, nothing is stored on a server. It's read-only here. Make it yours to edit, export, and build on it. Licenses travel with the icons: library icons keep their source licenses, and generated icons keep the license status they were shared with — upgrading them to commercial costs the new owner credits, same as generating them would.</p>
+    <div id="shared-icons" class="col-icons shared-grid"></div>
+    <p id="shared-note" class="muted"></p>
+    <div class="btn-col">
+      <button id="btn-shared-own" class="btn btn-primary">Make it yours</button>
+      <button id="btn-shared-upgrade" class="btn btn-ghost hidden">Upgrade generated icons to commercial</button>
+    </div>
+  </div>
+</section>
+
+<section class="gen-wrap">
+  <div class="card">
+    <h2>Complete my set</h2>
+    <p class="muted">Already own most of a set? Upload a few of its icons — the engine measures the set's actual style from the files themselves (stroke width, filled vs outlined, corner radius, grid), shows you the measurements, and composes the subjects you're missing in that style. Retrieval-and-restyle runs first, composition fills the true gaps, exactly like Generate the gap. Measurements are estimates from your files' attributes — every value is adjustable before you generate.</p>
+    <div class="row">
+      <label>Upload 2+ SVG icons from your set <input type="file" id="cms-files" accept=".svg,image/svg+xml" multiple></label>
+    </div>
+    <p id="cms-readout" class="muted"></p>
+    <div class="row hidden" id="cms-controls">
+      <label>Style
+        <select id="cms-mode">
+          <option value="outline">Outline</option>
+          <option value="solid">Solid</option>
+          <option value="duotone">Duotone</option>
+          <option value="3d">3D Look (gradient shading — flat SVG, not a 3D model)</option>
+        </select>
+      </label>
+      <label>Brand color <input type="color" id="cms-hex" value="#f5c542"></label>
+      <label>Stroke <input type="range" id="cms-stroke" min="1" max="2.5" step="0.1" value="1.8"></label>
+      <label>Corner <input type="range" id="cms-corner" min="0" max="4" step="0.5" value="2"></label>
+    </div>
+    <div class="row hidden" id="cms-subjects-row">
+      <input id="cms-subjects" type="text" class="grow" placeholder="Subjects you're missing, comma-separated — “settings, logout, share, trash”…">
+      <button id="btn-cms" class="btn btn-primary">Complete the set</button>
+    </div>
+    <div class="row hidden" id="cms-commercial-row">
+      <label class="toggle"><input type="checkbox" id="cms-commercial"> <span>Spend credits for the commercial license (1 credit per composed icon; sets up to 24). Without credits, composed icons are personal-use and sets cap at 6.</span></label>
+    </div>
+    <p id="cms-status" class="muted"></p>
+    <div id="cms-results" class="gen-results"></div>
+    <div class="btn-col">
+      <button id="btn-cms-add" class="btn btn-primary hidden">Add selected as a new collection</button>
+    </div>
+  </div>
+</section>
+
 <main class="layout">
   <section class="results-pane">
     <div class="results-head">
@@ -145,6 +194,22 @@
           <button id="btn-normalize-col" class="btn btn-ghost">Normalize whole set to one grid + stroke</button>
         </div>
         <p id="norm-col-note" class="muted"></p>
+        <hr class="sep">
+        <h3 class="subhead">Developer exports</h3>
+        <div class="btn-col">
+          <button id="btn-export-react" class="btn btn-ghost">Export React components (ZIP)</button>
+          <button id="btn-export-vue" class="btn btn-ghost">Export Vue components (ZIP)</button>
+          <button id="btn-export-css" class="btn btn-ghost">Export CSS (data-URI classes)</button>
+          <button id="btn-export-sprite-dev" class="btn btn-ghost">Export sprite (with license receipt)</button>
+        </div>
+        <p id="dev-note" class="muted"></p>
+        <hr class="sep">
+        <h3 class="subhead">Share this set</h3>
+        <p class="muted">The share link carries the whole set in the URL — no server storage. Library icons ride as references; generated and uploaded icons ride as their full drawings, so sets with several of those hit the link-size cap sooner. The recipient sees the set read-only and can make it their own; licenses travel with the icons.</p>
+        <div class="btn-col">
+          <button id="btn-share" class="btn btn-ghost">Copy share link for this set</button>
+        </div>
+        <p id="share-note" class="muted"></p>
       </div>
     </div>
     <div class="card">
@@ -169,7 +234,7 @@
 </main>
 
 <footer class="foot">
-  <span>Library icons via the Iconify open API — every icon keeps its own license, shown on the icon and in your export receipt. Generated icons are composed in your browser by the built-in engine (no AI service, nothing uploaded); the consistency engine normalizes library, generated, and uploaded icons onto one grid. The 3D Look style is gradient shading on flat SVG — not a 3D model.</span>
+  <span>Library icons via the Iconify open API — every icon keeps its own license, shown on the icon and in your export receipt. Generated icons are composed in your browser by the built-in engine (no AI service, nothing uploaded); the consistency engine normalizes library, generated, and uploaded icons onto one grid. Complete My Set measures style from your own files' attributes — an estimate you can adjust, not a guarantee. Share links carry the set in the URL itself. The 3D Look style is gradient shading on flat SVG — not a 3D model.</span>
 </footer>
 
 <div id="auth-modal" class="modal hidden">
@@ -192,5 +257,6 @@
 <script src="config.js"></script>
 <script src="app.js"></script>
 <script src="engine.js"></script>
+<script src="phase3.js"></script>
 </body>
 </html>

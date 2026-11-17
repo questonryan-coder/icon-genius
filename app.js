@@ -318,7 +318,8 @@ async function exportSprite() {
     const vb = svg.getAttribute("viewBox") || "0 0 24 24";
     parts.push(`<symbol id="${name}" viewBox="${vb}">${svg.innerHTML}</symbol>`);
   }
-  const sprite = `<svg xmlns="http://www.w3.org/2000/svg" style="display:none">\n${parts.join("\n")}\n</svg>`;
+  const receiptComment = `<!--\n${licenseReceipt(col).replace(/--/g, "–")}\n-->\n`;
+  const sprite = receiptComment + `<svg xmlns="http://www.w3.org/2000/svg" style="display:none">\n${parts.join("\n")}\n</svg>`;
   download(new Blob([sprite], { type: "image/svg+xml" }), `${col.name.replace(/\W+/g, "-").toLowerCase()}-sprite.svg`);
 }
 
