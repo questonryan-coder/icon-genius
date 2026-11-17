@@ -413,6 +413,8 @@
     const bal = $("#credits-balance");
     if (!bal) return;
     if (typeof state !== "undefined" && state.user) {
+      const em = $("#claim-email");
+      if (em && !em.value) em.value = state.user.email || "";
       bal.textContent = creditsState.loaded ? `${creditsState.balance} credits · plan: ${creditsState.plan}` : "credits unavailable right now";
       $("#gen-commercial-row").classList.remove("hidden");
     } else {
@@ -426,17 +428,19 @@
     if (!awReady()) { note.textContent = "Sign in first — credits are granted to your account."; return; }
     const packSel = $("#claim-pack");
     const pack = (root.IG_CONFIG.credits.packs || [])[+packSel.value];
+    const accountEmail = ($("#claim-email").value.trim() || (state.user && state.user.email) || "").toLowerCase();
     const paypalName = $("#claim-name").value.trim();
     const txn = $("#claim-txn").value.trim();
     if (!pack || !paypalName) { note.textContent = "Add the name on your PayPal payment so it can be matched."; return; }
+    if (!accountEmail) { note.textContent = "Add your Icon Genius account email — it is the match key for automatic granting."; return; }
     const c = root.IG_CONFIG;
     try {
       const { Permission, Role, ID } = window.Appwrite;
       await aw.databases.createDocument(c.databaseId, c.collections.exports, ID.unique(),
         { ownerId: state.user.$id, collectionId: pack.id, kind: "credit-claim",
-          receiptJson: JSON.stringify({ pack: pack.id, credits: pack.credits, amount: pack.price, paypalName, note: txn, status: "pending", filedAt: new Date().toISOString() }) },
+          receiptJson: JSON.stringify({ pack: pack.id, credits: pack.credits, amount: pack.price, accountEmail, paypalName, note: txn, status: "pending", filedAt: new Date().toISOString() }) },
         [Permission.read(Role.user(state.user.$id)), Permission.update(Role.user(state.user.$id)), Permission.delete(Role.user(state.user.$id))]);
-      note.textContent = "Claim filed. Credits are added by hand after the payment is checked — usually within a day. Nothing is automatic, and this claim stays on your account so you can see its status.";
+      note.textContent = "Claim filed. Once the payment email showing this amount and your account email in its note reaches the payment mailbox, credits are granted automatically — usually within the hour. This claim stays on your account so you can watch its status.";
       renderClaims();
     } catch (e) { note.textContent = "Claim failed to save — try again in a moment."; }
   }

@@ -154,11 +154,12 @@
       <div id="packs" class="packs"></div>
       <hr class="sep">
       <h3 class="subhead">Already paid? Claim your credits</h3>
-      <p class="muted">PayPal doesn't notify the app, so claims are checked and granted by hand — usually within a day. Nothing is automatic.</p>
+      <p class="muted">When you pay, <strong>put your Icon Genius account email in the PayPal payment note</strong> — that note is the match key. A watcher checks the payment mailbox hourly; once your payment email matches your claim (same amount, your email in the note), credits land automatically — usually within the hour, never instant. Unmatched claims stay queued for a human look; nothing is ever granted on a guess.</p>
       <div class="btn-col">
         <select id="claim-pack"></select>
+        <input id="claim-email" type="email" placeholder="Your Icon Genius account email">
         <input id="claim-name" type="text" placeholder="Name on your PayPal payment">
-        <input id="claim-txn" type="text" placeholder="PayPal note or transaction ID (optional)">
+        <input id="claim-txn" type="text" placeholder="Anything else in your PayPal note (optional)">
         <button id="claim-submit" class="btn btn-ghost">File claim</button>
       </div>
       <p id="claim-note" class="muted"></p>

@@ -31,10 +31,16 @@ window.IG_CONFIG = {
   /* Credits. Stripe product creation was refused by the Stripe connector
      (HTTP 403, Nov 16 + Nov 17 2026), so the live rail is PayPal
      (paypal.me/queston — Queston's authorized fallback, Nov 17 2026).
-     Fulfillment is manual and the UI says so: buyers file a claim in-app,
-     credits are granted by hand after the payment is checked.
+     Fulfillment is automatic (Queston, Nov 17: "Automate this"): buyers
+     file a claim in-app with their account email in the PayPal note; an
+     hourly watcher matches the PayPal payment email to the claim (exact
+     amount + email in note) and grants the credits in Appwrite, marking
+     the claim granted with the payment email's message id as evidence.
+     Unmatched/ambiguous claims stay queued — never guess-granted.
+     Watcher: goals/icon-genius/hidden_files/paypal-grant-watcher/.
      If Stripe writes ever open up, create the three products/prices,
-     put their price IDs in stripePriceIds, and flip rail to "stripe". */
+     put their price IDs in stripePriceIds, and flip rail to "stripe"
+     (fulfillment then runs off the Stripe webhook instead). */
   credits: {
     rail: "paypal",
     packs: [
