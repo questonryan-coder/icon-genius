@@ -10,7 +10,8 @@ const FAMILIES = [
   ["lucide", "Lucide"], ["tabler", "Tabler"], ["ph", "Phosphor"], ["heroicons", "Heroicons"],
   ["mdi", "Material Design"], ["solar", "Solar"], ["mingcute", "MingCute"], ["iconamoon", "IconaMoon"],
   ["material-symbols", "Material Symbols"], ["ri", "Remix"], ["bi", "Bootstrap"], ["gg", "css.gg"],
-  ["radix-icons", "Radix"], ["carbon", "Carbon"], ["fluent", "Fluent"], ["octicon", "Octicons"]
+  ["radix-icons", "Radix"], ["carbon", "Carbon"], ["fluent", "Fluent"], ["octicon", "Octicons"],
+  ["withicons-soft3d", "Soft 3D"]
 ];
 const PAGE = 96;
 
@@ -28,9 +29,12 @@ const state = {
 
 /* ---------- helpers ---------- */
 const splitId = (id) => { const i = id.indexOf(":"); return [id.slice(0, i), id.slice(i + 1)]; };
-const meta = (id) => state.sets[splitId(id)[0]] || {};
-const isMono = (id) => meta(id).palette === false;
-const licenseOf = (id) => (meta(id).license || {});
+/* Phase 2: custom icons (generated / uploaded / normalized) live in the
+   engine.js registry, not in Iconify set metadata. */
+const customRec = (id) => (window.IGCustom ? window.IGCustom.get(id) : null);
+const meta = (id) => { const r = customRec(id); if (r) return { name: r.setName || "Icon Genius", palette: !r.mono ? true : false, author: { name: r.author || "" } }; return state.sets[splitId(id)[0]] || {}; };
+const isMono = (id) => { const r = customRec(id); if (r) return !!r.mono; return meta(id).palette === false; };
+const licenseOf = (id) => { const r = customRec(id); if (r) return r.license || {}; return (meta(id).license || {}); };
 function licenseClass(id) {
   const spdx = licenseOf(id).spdx || "";
   if (SAFE.has(spdx)) return "safe";
@@ -82,6 +86,12 @@ async function ensureIconData(ids) {
   }
 }
 function svgMarkup(id, color) {
+  const cr = customRec(id);
+  if (cr) {
+    let body = cr.body;
+    if (color && cr.mono) body = body.split("currentColor").join(color);
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${cr.w || 24} ${cr.h || 24}" aria-hidden="true">${body}</svg>`;
+  }
   const rec = iconCache.get(id);
   if (!rec) return "";
   let body = rec.body;
@@ -100,6 +110,12 @@ function hydrateIcons(root, colorFor) {
   });
 }
 async function fetchSvgText(id, color) {
+  const cr = customRec(id);
+  if (cr) {
+    let body = cr.body;
+    if (color && cr.mono) body = body.split("currentColor").join(color);
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${cr.w || 24}" height="${cr.h || 24}" viewBox="0 0 ${cr.w || 24} ${cr.h || 24}">${body}</svg>`;
+  }
   await ensureIconData([id]);
   const rec = iconCache.get(id);
   if (rec) {
@@ -173,7 +189,10 @@ async function browseSet(prefix) {
   $("#results-count").textContent = `Loading ${state.sets[prefix]?.name || prefix}…`;
   const r = await fetch(`${API}/collection?prefix=${encodeURIComponent(prefix)}`);
   const data = await r.json();
-  let names = [...(data.icons || [])];
+  /* Iconify /collection returns names under "uncategorized" (+ "categories"
+     on some sets); there is no "icons" key. Fixed Nov 17, 2026 — family
+     browse returned empty for Lucide and other uncategorized sets. */
+  let names = [...(data.icons || []), ...(data.uncategorized || [])];
   if (data.categories) for (const k of Object.keys(data.categories)) names = names.concat(data.categories[k]);
   setResults([...new Set(names)].map((n) => `${prefix}:${n}`));
 }
@@ -252,6 +271,13 @@ function licenseReceipt(col) {
     ``
   ];
   for (const id of col.icons) {
+    const cr = customRec(id);
+    if (cr) {
+      lines.push(`- ${cr.name} (${id})`);
+      lines.push(`  Source: ${cr.sourceLine || "Icon Genius"}`);
+      lines.push(`  License: ${cr.license?.title || "See source"}`);
+      continue;
+    }
     const lic = licenseOf(id); const m = meta(id);
     lines.push(`- ${id}`);
     lines.push(`  Set: ${m.name || splitId(id)[0]}${m.author?.name ? ` by ${m.author.name}` : ""}`);

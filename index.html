@@ -32,6 +32,48 @@
   <div id="families" class="families"></div>
 </section>
 
+<section class="gen-wrap">
+  <div class="card">
+    <h2>Generate the gap</h2>
+    <p class="muted">The library doesn't have it? The built-in engine composes it right here in your browser — on the same grid, in your style lock — and restyles matching library icons to match. No uploads to any AI service; nothing leaves your machine.</p>
+    <div class="row">
+      <input id="gen-prompt" type="text" placeholder="Describe the set — “login”, “weather”, “music player”…" class="grow">
+      <button id="btn-gen" class="btn btn-primary">Generate</button>
+    </div>
+    <div class="row">
+      <label>Style
+        <select id="gen-mode">
+          <option value="outline">Outline</option>
+          <option value="solid">Solid</option>
+          <option value="duotone">Duotone</option>
+          <option value="3d">3D Look (gradient shading — flat SVG, not a 3D model)</option>
+        </select>
+      </label>
+      <label>Brand color <input type="color" id="gen-hex" value="#f5c542"></label>
+      <label>Stroke <input type="range" id="gen-stroke" min="1" max="2.5" step="0.1" value="1.8"></label>
+      <label>Corner <input type="range" id="gen-corner" min="0" max="4" step="0.5" value="2"></label>
+      <label>Set size
+        <select id="gen-size">
+          <option>4</option><option selected>6</option><option>12</option><option>24</option>
+        </select>
+      </label>
+    </div>
+    <div class="row hidden" id="gen-commercial-row">
+      <label class="toggle"><input type="checkbox" id="gen-commercial"> <span>Spend credits for the commercial license (1 credit per composed icon; sets up to 24). Without credits, composed icons are personal-use and sets cap at 6.</span></label>
+    </div>
+    <p id="gen-status" class="muted"></p>
+    <div id="gen-results" class="gen-results"></div>
+    <div class="btn-col">
+      <button id="btn-gen-add" class="btn btn-primary hidden">Add selected to a new collection</button>
+    </div>
+    <hr class="sep">
+    <div class="row">
+      <label>Upload an SVG to normalize it onto the grid <input type="file" id="up-file" accept=".svg,image/svg+xml"></label>
+    </div>
+    <p id="up-note" class="muted"></p>
+  </div>
+</section>
+
 <main class="layout">
   <section class="results-pane">
     <div class="results-head">
@@ -73,6 +115,14 @@
           <button id="btn-dl-png" class="btn btn-ghost">Download PNG</button>
           <button id="btn-add" class="btn btn-ghost">Add to collection</button>
         </div>
+        <hr class="sep">
+        <div class="row">
+          <label>Grid stroke <input type="range" id="norm-stroke" min="1" max="2.5" step="0.1" value="1.8"></label>
+        </div>
+        <div class="btn-col">
+          <button id="btn-normalize" class="btn btn-ghost">Normalize this icon to the grid</button>
+        </div>
+        <p id="norm-note" class="muted"></p>
       </div>
     </div>
 
@@ -92,14 +142,33 @@
         <div class="btn-col">
           <button id="btn-export-zip" class="btn btn-primary">Export ZIP (SVG + PNG + license receipt)</button>
           <button id="btn-export-sprite" class="btn btn-ghost">Export SVG sprite</button>
+          <button id="btn-normalize-col" class="btn btn-ghost">Normalize whole set to one grid + stroke</button>
         </div>
+        <p id="norm-col-note" class="muted"></p>
       </div>
+    </div>
+    <div class="card">
+      <h2>Credits</h2>
+      <p id="credits-balance" class="muted">Sign in to see your credit balance.</p>
+      <p class="muted">Credits never expire. One credit licenses one generated icon for commercial use and counts toward bigger sets. Library icons are always free under their own licenses.</p>
+      <div id="packs" class="packs"></div>
+      <hr class="sep">
+      <h3 class="subhead">Already paid? Claim your credits</h3>
+      <p class="muted">PayPal doesn't notify the app, so claims are checked and granted by hand — usually within a day. Nothing is automatic.</p>
+      <div class="btn-col">
+        <select id="claim-pack"></select>
+        <input id="claim-name" type="text" placeholder="Name on your PayPal payment">
+        <input id="claim-txn" type="text" placeholder="PayPal note or transaction ID (optional)">
+        <button id="claim-submit" class="btn btn-ghost">File claim</button>
+      </div>
+      <p id="claim-note" class="muted"></p>
+      <div id="my-claims"></div>
     </div>
   </aside>
 </main>
 
 <footer class="foot">
-  <span>Library icons via the Iconify open API — every icon keeps its own license, shown on the icon and in your export receipt. Generated icons and the consistency engine arrive in Phase 2.</span>
+  <span>Library icons via the Iconify open API — every icon keeps its own license, shown on the icon and in your export receipt. Generated icons are composed in your browser by the built-in engine (no AI service, nothing uploaded); the consistency engine normalizes library, generated, and uploaded icons onto one grid. The 3D Look style is gradient shading on flat SVG — not a 3D model.</span>
 </footer>
 
 <div id="auth-modal" class="modal hidden">
@@ -121,5 +190,6 @@
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="config.js"></script>
 <script src="app.js"></script>
+<script src="engine.js"></script>
 </body>
 </html>

@@ -64,6 +64,27 @@ select{background:var(--panel2);color:var(--text);border:1px solid var(--line);b
 .col-icons .mini svg{width:28px;height:28px;display:block}
 .col-icons .mini button{position:absolute;top:-7px;right:-7px;width:17px;height:17px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--muted);font-size:.65rem;line-height:1;padding:0}
 .foot{padding:1.2rem;color:var(--muted);font-size:.82rem;text-align:center;border-top:1px solid var(--line);margin-top:1rem}
+.gen-wrap{max-width:1400px;margin:0 auto;padding:0 1.2rem}
+.gen-wrap .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:1rem}
+.gen-wrap h2{margin:.1rem 0 .7rem;font-size:1.05rem}
+.grow{flex:1}
+.row input[type=text].grow{flex:1}
+.row input[type=range]{accent-color:var(--accent)}
+.sep{border:none;border-top:1px solid var(--line);margin:.9rem 0}
+.subhead{font-size:.95rem;margin:.2rem 0 .4rem}
+.gen-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.55rem;margin-top:.6rem}
+.cand{display:flex;flex-direction:column;align-items:center;gap:.3rem;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:.55rem .3rem;cursor:pointer;font-size:.72rem;color:var(--muted);text-align:center}
+.cand svg{width:38px;height:38px;display:block}
+.cand .cand-name{word-break:break-all;line-height:1.25}
+.cand .badge{font-size:.58rem;padding:.05rem .35rem;border-radius:999px;border:1px solid var(--line)}
+.packs{display:flex;flex-direction:column;gap:.6rem;margin:.6rem 0}
+.pack{border:1px solid var(--line);border-radius:10px;padding:.7rem;background:var(--panel2);display:flex;flex-direction:column;gap:.35rem}
+.pack-name{font-weight:700}
+.pack-price{color:var(--muted);font-size:.88rem}
+.pack .btn{text-align:center;text-decoration:none}
+.claim-row{display:flex;justify-content:space-between;align-items:center;padding:.35rem 0;border-bottom:1px solid var(--line);font-size:.88rem}
+.claim-row .badge{font-size:.62rem;padding:.08rem .4rem;border-radius:999px;border:1px solid var(--line);color:var(--accent)}
+.card select,.card input[type=text]{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:.45rem .6rem}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:20}
 .modal-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:1.4rem;width:min(92vw,360px);display:flex;flex-direction:column;gap:.6rem}
 .modal-card input{padding:.6rem .7rem;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text)}
